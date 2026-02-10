@@ -9,11 +9,9 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Resources\UserResource;
 use App\Http\Requests\UpdateUserRequest;
 
+
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
     if ($request->boolean('trashed')) {
@@ -23,8 +21,24 @@ class UserController extends Controller
     }
 
     return UserResource::collection($users);
-}
+    }
 
+    public function restore($id)
+    {
+    $user = User::onlyTrashed()->find($id);
+
+    if (!$user) {
+        return response()->json([
+            'message' => 'Usuario no encontrado.'
+        ], 404);
+    }
+
+    $user->restore();
+
+    return response()->json([
+        'message' => 'Usuario restaurado correctamente.'
+    ]);
+    }
     public function show($id)
     {
     $user = User::findOrFail($id);
@@ -54,9 +68,7 @@ class UserController extends Controller
         200
     );
     }
-    /**
-     * Store a newly created resource in storage.
-     */
+    
     public function store(StoreUserRequest $request)
     {
     $data = $request->validated();
