@@ -12,9 +12,13 @@ class User extends Model
 
     protected $fillable = [
         'name',
+        'lastname',
         'email',
         'username',
         'dui',
+        'birth_date',
+        'hiring_date',
         'phone_number',
+        'password',
     ];
 }
